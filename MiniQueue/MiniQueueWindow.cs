@@ -40,6 +40,7 @@ namespace MiniQueue
 
         private void updateQueue()
         {
+            //TODO: wrap this nonsense in a try-catch block
             //do this stuff first so we don't repeat ourselves
 
             WebClient wc = new WebClient();
@@ -62,8 +63,8 @@ namespace MiniQueue
                 string time = humanReadableMinutesSeconds(theAnswer[1]);
 
                 //passes control to UI thread to update text boxes
-                updateQueueQuantity(quantity);
-                updateQueueTime(time);
+                updateQueue(quantity, time);
+                
 
 
                 //5 second update interval
@@ -74,6 +75,8 @@ namespace MiniQueue
         /// <summary>
         /// Format milliseconds as human readable
         /// We're breaking this out into a separate method because reasons
+        /// TODO: Build in handling for edge cases
+        /// >What if we have wait times over an hour
         /// </summary>
         /// <param name="ms">Number of Milliseonds</param>
         /// <returns>MM:SS of the max wait time</returns>
@@ -94,7 +97,6 @@ namespace MiniQueue
             int count = 0;
 
             //longest waiting call in ms
-            //32-bit int - no overflow concerns
             int longestWaiting = 0;
             int longestWaitingTemp;
 
@@ -102,13 +104,12 @@ namespace MiniQueue
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             dynamic item = serializer.Deserialize<object>(raw);
 
-            //Iterate through the queues and pull out the data we want - number of calls and currently longest waiting
+            //Iterate through the queues and pull out the data we want
             for (int x = 0; x < item.Length; x++)
             {
-                //Gets the number of waiting contacts
+                //you'll need to read the schema 
+                //i'm not happy about it either
                 count += item[x]["VoiceIAQStats"]["nWaitingContacts"];
-
-                //Gets the longest currently waiting duration in this queue
                 longestWaitingTemp = item[x]["VoiceIAQStats"]["longestCurrentlyWaitingDuration"];
 
                 //We only care about this if it's longer than the others
@@ -128,22 +129,25 @@ namespace MiniQueue
         /// Necessary because threading
         /// </summary>
         /// <param name="value">Value</param>
-        public void updateQueueQuantity(string value)
+        public void updateQueue(string contacts, string longest)
         {
             //Checks if we're in the right thread (we arent)
             if (InvokeRequired)
             {
                 //Runs us up the call chain - we need a window
-                this.Invoke(new Action<string>(updateQueueQuantity), new object[] { value });
+                this.Invoke(new Action<string>(updateQueueQuantity), new object[] { contacts, longest });
                 return;
             }
 
             //Update text
-            contactWaitingValue.Text = value;
+            contactWaitingValue.Text = contacts;
+            longestWaitingValue.Text = longest;
+
         }
 
         /// <summary>
         /// Necessary because threading
+        /// nah nah nah im p sure we don't need this
         /// </summary>
         /// <param name="value">Value</param>
         public void updateQueueTime(string value)
