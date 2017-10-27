@@ -40,8 +40,8 @@ namespace MiniQueue
 
         private async void updateQueue()
         {
-            //TODO: wrap this nonsense in a try-catch block
-            //do this stuff first so we don't repeat ourselves
+           
+            //because scope matters
 
             WebClient wc = null;
 
@@ -56,37 +56,37 @@ namespace MiniQueue
                 while (true)
                 {
 
+                    //TODO: your data structures are bad and you should feel bad
                     int[] theAnswer;
 
                     //Releases the current thread back to windows form
                     Application.DoEvents();
 
+                    //TODO: move to app.config
                     theAnswer = parseJSONData(wc.DownloadString("http://uccxpub01.philorch.org:9080/realtime/VoiceIAQStats"));
 
                     //obtains and formats miniqueue data
                     string quantity = theAnswer[0].ToString();
                     string time = humanReadableMinutesSeconds(theAnswer[1]);
 
-                    Console.WriteLine("Lets mkae sure we're only doing this once per 5 seconds");
-
                     //passes control to UI thread to update text boxes
-                    updateQueue(quantity, time);
-
-
+                    updateQueueDisplay(quantity, time);
 
                     //5 second update interval
                     await Task.Delay(5000);
                 }
             }
             //TODO: Add specific exception handling
-            //This should handle any protocol errors, although not very cleanly
+            //This should handle any network or transport layer errors, although not very cleanly
             catch (WebException ex)
             {
+                //user's gotta know what happened
                 MessageBox.Show(ex.Message);
             }
 
             catch (OperationCanceledException)
             {
+                //Just in case
                 MessageBox.Show("Interrupt!\n");
                 Thread.CurrentThread.Interrupt();
                 return;
@@ -155,21 +155,21 @@ namespace MiniQueue
         /// <summary>
         /// Necessary because threading
         /// </summary>
-        /// <param name="value">Value</param>
-        public void updateQueue(string contacts, string longest)
+        /// <param name="contacts">Number of calls in q</param>
+        /// <param name="longest">Older call in q wait time</param>
+        public void updateQueueDisplay(string contacts, string longest)
         {
             //Checks if we're in the right thread (we arent)
             if (InvokeRequired)
             {
                 //Runs us up the call chain - we need a window
-                this.Invoke(new Action<string, string>(updateQueue), new object[] { contacts, longest });
+                this.Invoke(new Action<string, string>(updateQueueDisplay), new object[] { contacts, longest });
                 return;
             }
 
-            //Update text
+            //Update text when we're in the right thread
             contactWaitingValue.Text = contacts;
             longestWaitingValue.Text = longest;
-
         }
     }
 }

@@ -27,3 +27,6 @@ It will return queue data about _all_ queues at this point, although there is a 
 
 Note: Authentication _may_ not be required for this API, but we're going to keep it in anyway, for now
 
+##Resource Utilization
+Total Data throughput in KBps
+\frac{[(NumCSQs * 860b) * NumUsers] * 1024}{5}
