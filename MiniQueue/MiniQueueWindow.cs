@@ -38,37 +38,64 @@ namespace MiniQueue
             cThread.Start();
         }
 
-        private void updateQueue()
+        private async void updateQueue()
         {
             //TODO: wrap this nonsense in a try-catch block
             //do this stuff first so we don't repeat ourselves
 
-            WebClient wc = new WebClient();
+            WebClient wc = null;
 
-            wc.Headers[HttpRequestHeader.Authorization] = string.Format("Basic {0}", credentials);
-
-            //infinite loop to update the queue
-            while (true)
+            try
             {
+                wc = new WebClient();
 
-                int[] theAnswer;
+                //Authentication may not actually be necesary
+                wc.Headers[HttpRequestHeader.Authorization] = string.Format("Basic {0}", credentials);
 
-                //Releases the current thread back to windows form
-                Application.DoEvents();
+                //update the queue
+                while (true)
+                {
 
-                theAnswer = parseJSONData(wc.DownloadString("http://uccxpub01.philorch.org:9080/realtime/VoiceIAQStats"));
+                    int[] theAnswer;
 
-                //obtains and formats miniqueue data
-                string quantity = theAnswer[0].ToString();
-                string time = humanReadableMinutesSeconds(theAnswer[1]);
+                    //Releases the current thread back to windows form
+                    Application.DoEvents();
 
-                //passes control to UI thread to update text boxes
-                updateQueue(quantity, time);
-                
+                    theAnswer = parseJSONData(wc.DownloadString("http://uccxpub01.philorch.org:9080/realtime/VoiceIAQStats"));
+
+                    //obtains and formats miniqueue data
+                    string quantity = theAnswer[0].ToString();
+                    string time = humanReadableMinutesSeconds(theAnswer[1]);
+
+                    Console.WriteLine("Lets mkae sure we're only doing this once per 5 seconds");
+
+                    //passes control to UI thread to update text boxes
+                    updateQueue(quantity, time);
 
 
-                //5 second update interval
-                System.Threading.Thread.Sleep(5000);
+
+                    //5 second update interval
+                    await Task.Delay(5000);
+                }
+            }
+            //TODO: Add specific exception handling
+            //This should handle any protocol errors, although not very cleanly
+            catch (WebException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Interrupt!\n");
+                Thread.CurrentThread.Interrupt();
+                return;
+            }
+            
+            finally
+            {
+                //clean up
+                wc?.Dispose();
             }
         }
 
@@ -135,7 +162,7 @@ namespace MiniQueue
             if (InvokeRequired)
             {
                 //Runs us up the call chain - we need a window
-                this.Invoke(new Action<string>(updateQueueQuantity), new object[] { contacts, longest });
+                this.Invoke(new Action<string, string>(updateQueue), new object[] { contacts, longest });
                 return;
             }
 
@@ -143,25 +170,6 @@ namespace MiniQueue
             contactWaitingValue.Text = contacts;
             longestWaitingValue.Text = longest;
 
-        }
-
-        /// <summary>
-        /// Necessary because threading
-        /// nah nah nah im p sure we don't need this
-        /// </summary>
-        /// <param name="value">Value</param>
-        public void updateQueueTime(string value)
-        {
-            //Checks if we're in the right thread (we arent)
-            if (InvokeRequired)
-            {
-                //Runs us up the call chain - we need a window
-                this.Invoke(new Action<string>(updateQueueTime), new object[] { value });
-                return;
-            }
-
-            //Update text
-            longestWaitingValue.Text = value;
         }
     }
 }

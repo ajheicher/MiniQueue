@@ -6,10 +6,12 @@ This project was created to replace the mini-queue originally provided by the Ci
 
 Cisco Finesse does not offer support for this functionality natively, and adding a TOTALCOUNT row to a CUIC report requires a $25,000 Premium CUIC license. 
 
-## So, how does it work?
+## Functionality
 This program queries the Finesse realtime API located at http://<FinesseURL>:9080/realtime/schema on coresident Finesse deployments with Unified CCX. 
 
 This API is not officially supported as a method by which to obtain this data, however no method is available otherwise, so we are using what we have.
 
-## What is the server load like?
-TODO: Update this area after testing
+## Authentication
+The authentication is basic auth using Finesse credentials. Any user has access to the realtime API, so even an agent can use this queue. 
+
+It will return queue data about _all_ queues at this point, although there is a TODO in place to enable the restriction of the mini-queue to only queues that one is assigned. Unfortunately, this requires the use of the alternate web services API to grab the user object - server load is a concern here, and further testing is required.
