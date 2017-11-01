@@ -32,6 +32,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.contactWaitingValue = new System.Windows.Forms.TextBox();
             this.longestWaitingValue = new System.Windows.Forms.TextBox();
+            this.maxCalls = new System.Windows.Forms.Label();
+            this.maxLongestWaiting = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -72,16 +74,34 @@
             this.longestWaitingValue.TabIndex = 3;
             this.longestWaitingValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // maxCalls
+            // 
+            this.maxCalls.AutoSize = true;
+            this.maxCalls.Location = new System.Drawing.Point(54, 116);
+            this.maxCalls.Name = "maxCalls";
+            this.maxCalls.Size = new System.Drawing.Size(0, 13);
+            this.maxCalls.TabIndex = 4;
+            // 
+            // maxLongestWaiting
+            // 
+            this.maxLongestWaiting.AutoSize = true;
+            this.maxLongestWaiting.Location = new System.Drawing.Point(225, 116);
+            this.maxLongestWaiting.Name = "maxLongestWaiting";
+            this.maxLongestWaiting.Size = new System.Drawing.Size(0, 13);
+            this.maxLongestWaiting.TabIndex = 5;
+            // 
             // MiniQueueWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(323, 125);
+            this.ClientSize = new System.Drawing.Size(323, 134);
+            this.Controls.Add(this.maxLongestWaiting);
+            this.Controls.Add(this.maxCalls);
             this.Controls.Add(this.longestWaitingValue);
             this.Controls.Add(this.contactWaitingValue);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.MaximumSize = new System.Drawing.Size(339, 163);
+            this.MaximumSize = new System.Drawing.Size(339, 250);
             this.MinimumSize = new System.Drawing.Size(339, 163);
             this.Name = "MiniQueueWindow";
             this.Text = "Mini Queue";
@@ -98,5 +118,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox contactWaitingValue;
         private System.Windows.Forms.TextBox longestWaitingValue;
+        private System.Windows.Forms.Label maxCalls;
+        private System.Windows.Forms.Label maxLongestWaiting;
     }
 }

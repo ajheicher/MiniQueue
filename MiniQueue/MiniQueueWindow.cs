@@ -25,6 +25,8 @@ namespace MiniQueue
         {
             InitializeComponent();
             credentials = uc;
+            maxCalls.Text = "0";
+            maxLongestWaiting.Text = "00:00";
         }
 
 
@@ -124,8 +126,10 @@ namespace MiniQueue
             int count = 0;
 
             //longest waiting call in ms
+            //TODO: Longest call of the day
             int longestWaiting = 0;
             int longestWaitingTemp;
+            
 
             //serialize the raw JSON data and shove it in a dynamic for now
             JavaScriptSerializer serializer = new JavaScriptSerializer();
@@ -138,6 +142,7 @@ namespace MiniQueue
                 //i'm not happy about it either
                 count += item[x]["VoiceIAQStats"]["nWaitingContacts"];
                 longestWaitingTemp = item[x]["VoiceIAQStats"]["longestCurrentlyWaitingDuration"];
+               
 
                 //We only care about this if it's longer than the others
                 if (longestWaitingTemp > longestWaiting)
@@ -170,6 +175,28 @@ namespace MiniQueue
             //Update text when we're in the right thread
             contactWaitingValue.Text = contacts;
             longestWaitingValue.Text = longest;
+
+            //"oh, this won't be so bad"
+            if (Convert.ToInt32(maxCalls.Text) < Convert.ToInt32(contacts)) { maxCalls.Text = contacts; }
+
+            //oh no
+            if (Convert.ToInt32(maxLongestWaiting.Text.Substring(0, maxLongestWaiting.Text.IndexOf(":"))) <
+                Convert.ToInt32(longest.Substring(0,longest.IndexOf(":")) ))
+            {
+                maxLongestWaiting.Text = longest;
+            }
+
+            //OH NO
+            else if (Convert.ToInt32(maxLongestWaiting.Text.Substring(0, maxLongestWaiting.Text.IndexOf(":"))) ==
+                Convert.ToInt32(longest.Substring(0, longest.IndexOf(":"))) && 
+                (Convert.ToInt32(maxLongestWaiting.Text.Substring(maxLongestWaiting.Text.IndexOf(":") + 1)) <
+                Convert.ToInt32(longest.Substring(longest.IndexOf(":") + 1))))
+                
+            {
+                maxLongestWaiting.Text = longest;
+            }
+           
+
         }
     }
 }

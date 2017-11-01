@@ -29,4 +29,4 @@ Note: Authentication _may_ not be required for this API, but we're going to keep
 
 ## Resource Utilization
 Total Data throughput in KBps
-\frac{[(NumCSQs * 860b) * NumUsers] * 1024}{5}
+(NumCSQs * 860b * NumUsers) * 1024 / 5
