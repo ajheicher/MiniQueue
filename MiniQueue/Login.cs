@@ -29,7 +29,7 @@ namespace MiniQueue
 
             //Open main window
             this.Hide();
-            MiniQueueWindow main = new MiniQueueWindow(ucCredentials);
+            MiniQueueWindow main = new MiniQueueWindow();
 
             main.Show();
 

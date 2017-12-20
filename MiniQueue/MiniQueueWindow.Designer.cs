@@ -32,8 +32,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.contactWaitingValue = new System.Windows.Forms.TextBox();
             this.longestWaitingValue = new System.Windows.Forms.TextBox();
-            this.maxCalls = new System.Windows.Forms.Label();
-            this.maxLongestWaiting = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -47,6 +45,8 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(165, 9);
             this.label2.Name = "label2";
@@ -56,57 +56,49 @@
             // 
             // contactWaitingValue
             // 
+            this.contactWaitingValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.contactWaitingValue.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.contactWaitingValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.contactWaitingValue.Location = new System.Drawing.Point(15, 33);
             this.contactWaitingValue.Name = "contactWaitingValue";
             this.contactWaitingValue.ReadOnly = true;
-            this.contactWaitingValue.Size = new System.Drawing.Size(85, 80);
+            this.contactWaitingValue.Size = new System.Drawing.Size(85, 73);
             this.contactWaitingValue.TabIndex = 2;
             this.contactWaitingValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.contactWaitingValue.TextChanged += new System.EventHandler(this.contactWaitingValue_TextChanged);
             // 
             // longestWaitingValue
             // 
+            this.longestWaitingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.longestWaitingValue.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.longestWaitingValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.longestWaitingValue.Location = new System.Drawing.Point(106, 33);
             this.longestWaitingValue.Name = "longestWaitingValue";
             this.longestWaitingValue.ReadOnly = true;
-            this.longestWaitingValue.Size = new System.Drawing.Size(205, 80);
+            this.longestWaitingValue.Size = new System.Drawing.Size(205, 73);
             this.longestWaitingValue.TabIndex = 3;
             this.longestWaitingValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // maxCalls
-            // 
-            this.maxCalls.AutoSize = true;
-            this.maxCalls.Location = new System.Drawing.Point(54, 116);
-            this.maxCalls.Name = "maxCalls";
-            this.maxCalls.Size = new System.Drawing.Size(0, 13);
-            this.maxCalls.TabIndex = 4;
-            // 
-            // maxLongestWaiting
-            // 
-            this.maxLongestWaiting.AutoSize = true;
-            this.maxLongestWaiting.Location = new System.Drawing.Point(225, 116);
-            this.maxLongestWaiting.Name = "maxLongestWaiting";
-            this.maxLongestWaiting.Size = new System.Drawing.Size(0, 13);
-            this.maxLongestWaiting.TabIndex = 5;
             // 
             // MiniQueueWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(323, 134);
-            this.Controls.Add(this.maxLongestWaiting);
-            this.Controls.Add(this.maxCalls);
-            this.Controls.Add(this.longestWaitingValue);
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(323, 121);
             this.Controls.Add(this.contactWaitingValue);
+            this.Controls.Add(this.longestWaitingValue);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.MaximumSize = new System.Drawing.Size(339, 250);
-            this.MinimumSize = new System.Drawing.Size(339, 163);
             this.Name = "MiniQueueWindow";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Mini Queue";
             this.TopMost = true;
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MiniQueueWindow_FormClosed);
             this.Load += new System.EventHandler(this.MiniQueueWindow_Load);
+            this.Resize += new System.EventHandler(this.MiniQueueWindow_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,7 +110,5 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox contactWaitingValue;
         private System.Windows.Forms.TextBox longestWaitingValue;
-        private System.Windows.Forms.Label maxCalls;
-        private System.Windows.Forms.Label maxLongestWaiting;
     }
 }
