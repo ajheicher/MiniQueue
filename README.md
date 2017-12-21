@@ -21,12 +21,11 @@ This API is not officially supported as a method by which to obtain this data, h
 The program calls the API every 5 seconds, asynchronously, and passes control back to the application for the update. Doing this aynchonously - disposing of each of our web requests in unmanaged memory when we're done with them - results in a very low client-side resource footprint. Server-side resource cost is included in the Server Impact section below
 
 ## Authentication
-The authentication is basic auth using Finesse credentials. Any user has access to the realtime API, so even an agent can use this queue. 
-
-It will return queue data about _all_ queues at this point, although there is a TODO in place to enable the restriction of the mini-queue to only queues that one is assigned. Unfortunately, this requires the use of the alternate web services API to grab the user object - server load is a concern here, and further testing is required.
-
-Note: Authentication _may_ not be required for this API, but we're going to keep it in anyway, for now
+This API, for some reason, does not require authentication
 
 ## Resource Utilization
 Total Data throughput in KBps
 (NumCSQs * 860b * NumUsers) * 1024 / 5
+
+## Error Handling
+The application will eseentially turn itself red in the case of a network timeout. It will attempt to retry in increasing increments of 5 seconds (5 seconds, 10 seconds, 15, etc) all the way up to 60, at point it will retry once per minute.

@@ -21,6 +21,8 @@ namespace MiniQueue
 {
     public partial class MiniQueueWindow : Form
     {
+        //This entire section is for the weird signal magic we do below
+        //It prevents flicker when forcing the aspect ratio static
         const double widthRatio = 113;
         const double heightRatio = 53;
 
@@ -29,10 +31,7 @@ namespace MiniQueue
         const int WMSZ_RIGHT = 2;
         const int WMSZ_TOP = 3;
         const int WMSZ_BOTTOM = 6;
-
-        string maxCalls;
-        string maxWaiting;
-
+        
         public struct RECT
         {
             public int Left;
@@ -41,16 +40,34 @@ namespace MiniQueue
             public int Bottom;
         }
 
-        public string credentials;
+        //eventually this will be configurable in settings
+        const int defaultRetryValue = 5000;
+
+        //maximum value containers
+        int maxCalls;
+        int maxWaiting;
+
+        //Error handling
+        bool isErrorState = false;
+        int retryValueMs = 5000;
+        
+
+
         public MiniQueueWindow()
         {
             InitializeComponent();
-            maxCalls = "0";
-            maxWaiting = "00:00"; 
+            maxCalls = 0;
+            maxWaiting = 0; 
         }
 
-        //this is some scandalous shit
-
+        /// <summary>
+        /// Basically this capitures the WndProc message for window resize
+        /// and ensures that the window maintains the same expect ratio
+        /// It does this before the Resize event actually fires, so we
+        /// don't have to deal with flicker
+        /// License and Credit:http://www.vcskicks.com/license.php
+        /// </summary>
+        /// <param name="m">Message</param>
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == WM_SIZING)
@@ -93,8 +110,6 @@ namespace MiniQueue
             //start thread
             cThread.Start();
 
-            
-
         }
 
         private async void updateQueue()
@@ -106,16 +121,16 @@ namespace MiniQueue
 
             while (true)
             {
+                if (isErrorState)
+                {
+                    if (retryValueMs < 60000) { retryValueMs += 5000; }
+                }
                 try
                 {
                     wc = new WebClient();
 
-                    //Authentication may not actually be necesary
-                    //wc.Headers[HttpRequestHeader.Authorization] = string.Format("Basic {0}", credentials);
-
                     //update the queue
-                    
-
+                   
                     //TODO: your data structures are bad and you should feel bad
                     int[] theAnswer;
 
@@ -125,15 +140,19 @@ namespace MiniQueue
                     //TODO: move to app.config
                     theAnswer = parseJSONData(wc.DownloadString("http://uccxpub01.philorch.org:9080/realtime/VoiceIAQStats"));
 
-                    //obtains and formats miniqueue data
-                    string quantity = theAnswer[0].ToString();
-                    string time = humanReadableMinutesSeconds(theAnswer[1]);
+                    //reset out of error state - we're recovered here
+                    if (isErrorState)
+                    {
+                        isErrorState = false;
+                        retryValueMs = defaultRetryValue;
+                        contactWaitingValue.BackColor = SystemColors.Control;
+                        longestWaitingValue.BackColor = SystemColors.Control;
+                    }
 
                     //passes control to UI thread to update text boxes
-                    updateQueueDisplay(quantity, time);
+                    updateQueueDisplay(theAnswer[0], theAnswer[1]);
 
-                    //5 second update interval
-                    await Task.Delay(5000);
+                    await Task.Delay(retryValueMs);
                     
                 }
                 //TODO: Add specific exception handling
@@ -141,13 +160,19 @@ namespace MiniQueue
                 catch (WebException ex)
                 {
                     //user's gotta know what happened
-                    MessageBox.Show(ex.Message + "\nRetrying...");
+                    //we don't exactly tell them - just make shit red
+                    contactWaitingValue.BackColor = Color.Red;
+                    longestWaitingValue.BackColor = Color.Red;
+
+                    // get the error state handling in place 
+                    isErrorState = true;
                 }
 
                 catch (OperationCanceledException)
                 {
                     //Just in case
                     MessageBox.Show("Interrupt!\n");
+                    
                     Thread.CurrentThread.Interrupt();
                     return;
                 }
@@ -162,16 +187,13 @@ namespace MiniQueue
 
         /// <summary>
         /// Format milliseconds as human readable
-        /// We're breaking this out into a separate method because reasons
-        /// TODO: Build in handling for edge cases
-        /// >What if we have wait times over an hour
         /// </summary>
         /// <param name="ms">Number of Milliseonds</param>
         /// <returns>MM:SS of the max wait time</returns>
         private string humanReadableMinutesSeconds(int ms)
         {
-            //Creates a timespan object, formats as a string, returns, and dumbs the object
-            return TimeSpan.FromMilliseconds(ms).ToString(@"mm\:ss");
+            if (ms > 3600000) { return TimeSpan.FromMilliseconds(ms).ToString(@"h\:mm\:ss"); }
+            else { return TimeSpan.FromMilliseconds(ms).ToString(@"mm\:ss"); }
         }
 
         /// <summary>
@@ -213,7 +235,6 @@ namespace MiniQueue
 
             //return data
             return new int[] { count, longestWaiting };
-
         }
 
         /// <summary>
@@ -221,45 +242,32 @@ namespace MiniQueue
         /// </summary>
         /// <param name="contacts">Number of calls in q</param>
         /// <param name="longest">Older call in q wait time</param>
-        public void updateQueueDisplay(string contacts, string longest)
+        public void updateQueueDisplay(int contacts, int longest)
         {
             //Checks if we're in the right thread (we arent)
             if (InvokeRequired)
             {
                 //Runs us up the call chain - we need a window
-                this.Invoke(new Action<string, string>(updateQueueDisplay), new object[] { contacts, longest });
+                this.Invoke(new Action<int, int>(updateQueueDisplay), new object[] { contacts, longest });
                 return;
             }
 
             //Update text when we're in the right thread
-            contactWaitingValue.Text = contacts;
-            longestWaitingValue.Text = longest;
+            contactWaitingValue.Text = contacts.ToString();
+            longestWaitingValue.Text = humanReadableMinutesSeconds(longest);
+
+            //WHY ARE YOU STORING THESE AS STRINGS
+            //GOD
+
+            if (maxCalls < contacts) { label1.Text = "Contacts Waiting (" + contacts + ")"; maxCalls = contacts; }
 
             //"oh, this won't be so bad"
-            if (Convert.ToInt32(maxCalls) < Convert.ToInt32(contacts)) { label1.Text = "Contacts Waiting (" + contacts + ")"; maxCalls = contacts; }
-
-            //oh no
-            if (Convert.ToInt32(maxWaiting.Substring(0, maxWaiting.IndexOf(":"))) <
-                Convert.ToInt32(longest.Substring(0,longest.IndexOf(":")) ))
+            if (maxWaiting < longest)
             {
                 maxWaiting = longest;
-                label2.Text = "Longest Waiting (" + longest + ")";
-                //maxLongestWaiting.Text = longest;
-            }
+                label2.Text = "Longest Waiting (" + humanReadableMinutesSeconds(longest) + ")";
 
-            //OH NO
-            else if (Convert.ToInt32(maxWaiting.Substring(0, maxWaiting.IndexOf(":"))) ==
-                Convert.ToInt32(longest.Substring(0, longest.IndexOf(":"))) && 
-                (Convert.ToInt32(maxWaiting.Substring(maxWaiting.IndexOf(":") + 1)) <
-                Convert.ToInt32(longest.Substring(longest.IndexOf(":") + 1))))
-                
-            {
-                label2.Text = "Longest Waiting (" + longest + ")";
-                maxWaiting = longest;
-                //maxLongestWaiting.Text = longest;
             }
-           
-
         }
 
         private void MiniQueueWindow_FormClosed(object sender, FormClosedEventArgs e)
@@ -276,6 +284,7 @@ namespace MiniQueue
             Size s = TextRenderer.MeasureText(this.contactWaitingValue.Text, this.contactWaitingValue.Font);
             contactWaitingValue.Size = s;
 
+            Console.WriteLine(this.Size + "; Font: " + contactWaitingValue.Font.Size);
             
         }
 
