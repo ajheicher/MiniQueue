@@ -256,9 +256,6 @@ namespace MiniQueue
             contactWaitingValue.Text = contacts.ToString();
             longestWaitingValue.Text = humanReadableMinutesSeconds(longest);
 
-            //WHY ARE YOU STORING THESE AS STRINGS
-            //GOD
-
             if (maxCalls < contacts) { label1.Text = "Contacts Waiting (" + contacts + ")"; maxCalls = contacts; }
 
             //"oh, this won't be so bad"
@@ -278,8 +275,21 @@ namespace MiniQueue
 
         private void MiniQueueWindow_Resize(object sender, EventArgs e)
         {
-            contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, this.Size.Height / 3, contactWaitingValue.Font.Style);
-            longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, this.Size.Height / 3, longestWaitingValue.Font.Style);
+            if (this.Size.Height < 159)
+            {
+                contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, this.Size.Height / 5, contactWaitingValue.Font.Style);
+                longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, this.Size.Height / 5, longestWaitingValue.Font.Style);
+
+                label1.Hide();
+                label2.Hide();
+            }
+            else
+            {
+                if (!label1.Visible && !label2.Visible) { label1.Show(); label2.Show(); }
+                contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, this.Size.Height / 3, contactWaitingValue.Font.Style);
+                longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, this.Size.Height / 3, longestWaitingValue.Font.Style);
+            }
+            
 
             Size s = TextRenderer.MeasureText(this.contactWaitingValue.Text, this.contactWaitingValue.Font);
             contactWaitingValue.Size = s;
