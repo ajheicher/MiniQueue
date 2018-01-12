@@ -41,7 +41,7 @@ namespace MiniQueue
         }
 
         //eventually this will be configurable in settings
-        const int defaultRetryValue = 5000;
+        readonly int defaultRetryValue = Properties.Settings.Default.UpdateInterval * 1000;
 
         //maximum value containers
         int maxCalls;
@@ -49,15 +49,18 @@ namespace MiniQueue
 
         //Error handling
         bool isErrorState = false;
-        int retryValueMs = 5000;
-        
+        int retryValueMs = Properties.Settings.Default.UpdateInterval * 1000;
+
 
 
         public MiniQueueWindow()
         {
             InitializeComponent();
             maxCalls = 0;
-            maxWaiting = 0; 
+            maxWaiting = 0;
+
+            
+
         }
 
         /// <summary>
@@ -145,8 +148,8 @@ namespace MiniQueue
                     {
                         isErrorState = false;
                         retryValueMs = defaultRetryValue;
-                        contactWaitingValue.BackColor = SystemColors.Control;
-                        longestWaitingValue.BackColor = SystemColors.Control;
+                        contactWaitingValue.BackColor = Properties.Settings.Default.BackColor;
+                        longestWaitingValue.BackColor = Properties.Settings.Default.BackColor;
                     }
 
                     //passes control to UI thread to update text boxes
@@ -161,8 +164,8 @@ namespace MiniQueue
                 {
                     //user's gotta know what happened
                     //we don't exactly tell them - just make shit red
-                    contactWaitingValue.BackColor = Color.Red;
-                    longestWaitingValue.BackColor = Color.Red;
+                    contactWaitingValue.BackColor = Properties.Settings.Default.ErrorColor;
+                    longestWaitingValue.BackColor = Properties.Settings.Default.ErrorColor;
 
                     // get the error state handling in place 
                     isErrorState = true;
@@ -269,12 +272,14 @@ namespace MiniQueue
 
         private void MiniQueueWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
+            //REMOVE THIS BEFORE DEPLOYMENT
+            Properties.Settings.Default.Reset();
             Application.Exit();
 
         }
 
         private void MiniQueueWindow_Resize(object sender, EventArgs e)
-        {
+        {/*
             if (this.Size.Height < 159)
             {
                 contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, this.Size.Height / 5, contactWaitingValue.Font.Style);
@@ -290,11 +295,11 @@ namespace MiniQueue
                 longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, this.Size.Height / 3, longestWaitingValue.Font.Style);
             }
             
+            */
+            //Size s = TextRenderer.MeasureText(this.contactWaitingValue.Text, this.contactWaitingValue.Font);
+            //contactWaitingValue.Size = s;
 
-            Size s = TextRenderer.MeasureText(this.contactWaitingValue.Text, this.contactWaitingValue.Font);
-            contactWaitingValue.Size = s;
-
-            Console.WriteLine(this.Size + "; Font: " + contactWaitingValue.Font.Size);
+            //Console.WriteLine(this.Size + "; Font: " + contactWaitingValue.Font.Size);
             
         }
 
@@ -304,7 +309,66 @@ namespace MiniQueue
 
         }
 
-       
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SettingsDialog s = new SettingsDialog(this);
+            s.ShowDialog();
+
+        }
+
+        public void updateAndPropegateSettings()
+        {
+
+            //For some reason, you need to "tickle" the background color of
+            //read only text boxes before you can actually changes the forecolor (text color)
+            //jesus.
+            //Thanks stack overflow
+            contactWaitingValue.BackColor = Properties.Settings.Default.BackColor;
+            longestWaitingValue.BackColor = Properties.Settings.Default.BackColor;
+            contactWaitingValue.ForeColor = Properties.Settings.Default.TextColor;
+            longestWaitingValue.ForeColor = Properties.Settings.Default.TextColor;
+
+            retryValueMs = Properties.Settings.Default.UpdateInterval * 1000;
+
+            resizeWindowToPreset();
+        }
+
+        public void resizeWindowToPreset()
+        {
+            switch (Properties.Settings.Default.SizeMode)
+            {
+                case "Very Small":
+                    this.Size = new Size(170, 80);
+                    this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 24);
+                    this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 24);
+                    label1.Hide();
+                    label2.Hide();
+                    break;
+                case "Small":
+                    this.Size = new Size(339, 159);
+                    this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 48);
+                    this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 48);
+                    break;
+                case "Medium":
+                    this.Size = new Size(339, 159);
+                    this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 48);
+                    this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 48);
+                    if (!label1.Visible) { label1.Show(); }
+                    if (!label2.Visible) { label2.Show(); }
+                    break;
+                case "Large":
+                    this.Size = new Size(339, 159);
+                    this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 48);
+                    this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 48);
+                    break;
+                    
+                case "Very Large":
+                    this.Size = new Size(1356, 636);
+                    this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 192);
+                    this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 192);
+                    break;
+            }
+        }
     }
 }
 

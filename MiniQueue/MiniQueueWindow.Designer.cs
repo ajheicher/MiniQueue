@@ -32,6 +32,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.contactWaitingValue = new System.Windows.Forms.TextBox();
             this.longestWaitingValue = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -56,8 +57,6 @@
             // 
             // contactWaitingValue
             // 
-            this.contactWaitingValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.contactWaitingValue.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.contactWaitingValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.contactWaitingValue.Location = new System.Drawing.Point(15, 33);
@@ -70,9 +69,7 @@
             // 
             // longestWaitingValue
             // 
-            this.longestWaitingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.longestWaitingValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.longestWaitingValue.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.longestWaitingValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.longestWaitingValue.Location = new System.Drawing.Point(106, 33);
@@ -82,12 +79,23 @@
             this.longestWaitingValue.TabIndex = 3;
             this.longestWaitingValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(289, 6);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(22, 18);
+            this.button1.TabIndex = 4;
+            this.button1.Text = "?";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MiniQueueWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(323, 121);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.contactWaitingValue);
             this.Controls.Add(this.longestWaitingValue);
             this.Controls.Add(this.label2);
@@ -110,5 +118,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox contactWaitingValue;
         private System.Windows.Forms.TextBox longestWaitingValue;
+        private System.Windows.Forms.Button button1;
     }
 }

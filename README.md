@@ -13,6 +13,9 @@ This project was created to replace the mini-queue originally provided by the Ci
 
 Cisco Finesse does not offer support for this functionality natively, and adding a TOTALCOUNT row to a CUIC report requires a $25,000 Premium CUIC license. 
 
+## Settings and Configuration
+There is a settings dialog which will allow you to change the window size (to predefined sizes only), various colors, the update interval, and more.
+
 ## Functionality
 This program queries the Finesse realtime API located at http://$FinesseURL:9080/realtime/schema on coresident Finesse deployments with Unified CCX. 
 
