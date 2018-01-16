@@ -81,6 +81,7 @@
             // 
             // button1
             // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Location = new System.Drawing.Point(289, 6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(22, 18);
@@ -106,6 +107,7 @@
             this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MiniQueueWindow_FormClosed);
             this.Load += new System.EventHandler(this.MiniQueueWindow_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MiniQueueWindow_MouseDown);
             this.Resize += new System.EventHandler(this.MiniQueueWindow_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();

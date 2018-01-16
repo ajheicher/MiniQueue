@@ -21,6 +21,9 @@ namespace MiniQueue
 {
     public partial class MiniQueueWindow : Form
     {
+
+        //TODO: create default setting constants
+
         //This entire section is for the weird signal magic we do below
         //It prevents flicker when forcing the aspect ratio static
         const double widthRatio = 113;
@@ -31,7 +34,15 @@ namespace MiniQueue
         const int WMSZ_RIGHT = 2;
         const int WMSZ_TOP = 3;
         const int WMSZ_BOTTOM = 6;
-        
+
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+
+        [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
+        public static extern bool ReleaseCapture();
+
         public struct RECT
         {
             public int Left;
@@ -59,7 +70,9 @@ namespace MiniQueue
             maxCalls = 0;
             maxWaiting = 0;
 
-            
+            label1.Text = "Contacts Waiting:";
+            label2.Text = "Longest Waitiing:";
+
 
         }
 
@@ -259,13 +272,25 @@ namespace MiniQueue
             contactWaitingValue.Text = contacts.ToString();
             longestWaitingValue.Text = humanReadableMinutesSeconds(longest);
 
-            if (maxCalls < contacts) { label1.Text = "Contacts Waiting (" + contacts + ")"; maxCalls = contacts; }
+           
+
+            if (maxCalls < contacts)
+                
+            {
+                maxCalls = contacts;
+                label1.Text = label1.Text.Substring(0, label1.Text.IndexOf(':')+1) + "(" + contacts + ")";
+              
+               
+            }
 
             //"oh, this won't be so bad"
             if (maxWaiting < longest)
             {
                 maxWaiting = longest;
-                label2.Text = "Longest Waiting (" + humanReadableMinutesSeconds(longest) + ")";
+               
+               label2.Text = label2.Text.Substring(0, label2.Text.IndexOf(':')+1) + "(" + humanReadableMinutesSeconds(longest) + ")";
+               
+                    
 
             }
         }
@@ -335,14 +360,22 @@ namespace MiniQueue
 
         public void resizeWindowToPreset()
         {
+            maxCalls = 0;
+            maxWaiting = 0;
             switch (Properties.Settings.Default.SizeMode)
             {
                 case "Very Small":
-                    this.Size = new Size(170, 80);
+                    this.Size = new Size(216, 107);
                     this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 24);
                     this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 24);
-                    label1.Hide();
-                    label2.Hide();
+                    this.contactWaitingValue.Location = new Point(10, 25);
+                    this.longestWaitingValue.Location = new Point(45, 25);
+                    this.label1.Text = "C.W.:";
+                    this.label2.Text = "L.W.:";
+                    this.label2.Location = new Point(100, 9);
+                    
+                    //label1.Hide();
+                    //label2.Hide();
                     break;
                 case "Small":
                     this.Size = new Size(339, 159);
@@ -368,6 +401,23 @@ namespace MiniQueue
                     this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 192);
                     break;
             }
+
+            if (Properties.Settings.Default.HideTitleBar)
+            { this.FormBorderStyle = FormBorderStyle.None;}
+            else { this.FormBorderStyle = FormBorderStyle.Sizable; }
+        }
+
+        private void MiniQueueWindow_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (Properties.Settings.Default.HideTitleBar)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ReleaseCapture();
+                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                }
+            }
+            
         }
     }
 }

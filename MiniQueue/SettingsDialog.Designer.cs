@@ -46,6 +46,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.updateIntervalComboBox = new System.Windows.Forms.ComboBox();
+            this.hideTitleBarCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -202,11 +203,22 @@
             this.updateIntervalComboBox.TabIndex = 16;
             this.updateIntervalComboBox.SelectedIndexChanged += new System.EventHandler(this.updateIntervalComboBox_SelectedIndexChanged);
             // 
+            // hideTitleBarCheckBox
+            // 
+            this.hideTitleBarCheckBox.AutoSize = true;
+            this.hideTitleBarCheckBox.Location = new System.Drawing.Point(197, 25);
+            this.hideTitleBarCheckBox.Name = "hideTitleBarCheckBox";
+            this.hideTitleBarCheckBox.Size = new System.Drawing.Size(87, 17);
+            this.hideTitleBarCheckBox.TabIndex = 18;
+            this.hideTitleBarCheckBox.Text = "Hide TitleBar";
+            this.hideTitleBarCheckBox.UseVisualStyleBackColor = true;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 240);
+            this.Controls.Add(this.hideTitleBarCheckBox);
             this.Controls.Add(this.updateIntervalComboBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -251,5 +263,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox updateIntervalComboBox;
+        private System.Windows.Forms.CheckBox hideTitleBarCheckBox;
     }
 }

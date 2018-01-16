@@ -59,6 +59,7 @@ namespace MiniQueue
             Properties.Settings.Default.BackColor = colorDialog2.Color;
             Properties.Settings.Default.ErrorColor = colorDialog3.Color;
             Properties.Settings.Default.UpdateInterval = int.Parse(updateIntervalComboBox.SelectedItem.ToString());
+            Properties.Settings.Default.HideTitleBar = hideTitleBarCheckBox.Checked;
 
             //save user settings
             Properties.Settings.Default.Save();
@@ -154,6 +155,7 @@ namespace MiniQueue
             colorDialog1.Color = Properties.Settings.Default.TextColor;
             colorDialog2.Color = Properties.Settings.Default.BackColor;
             colorDialog3.Color = Properties.Settings.Default.ErrorColor;
+            hideTitleBarCheckBox.Checked = Properties.Settings.Default.HideTitleBar;
         }
     }
 }

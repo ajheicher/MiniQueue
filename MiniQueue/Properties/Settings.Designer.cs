@@ -82,5 +82,17 @@ namespace MiniQueue.Properties {
                 this["ErrorColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideTitleBar {
+            get {
+                return ((bool)(this["HideTitleBar"]));
+            }
+            set {
+                this["HideTitleBar"] = value;
+            }
+        }
     }
 }
