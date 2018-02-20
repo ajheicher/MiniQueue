@@ -63,10 +63,7 @@
             this.sizeSettingComboBox.FormattingEnabled = true;
             this.sizeSettingComboBox.Items.AddRange(new object[] {
             "Very Small",
-            "Small",
-            "Medium",
-            "Large",
-            "Very Large"});
+            "Medium"});
             this.sizeSettingComboBox.Location = new System.Drawing.Point(108, 49);
             this.sizeSettingComboBox.Name = "sizeSettingComboBox";
             this.sizeSettingComboBox.Size = new System.Drawing.Size(81, 21);
@@ -75,7 +72,7 @@
             // 
             // applyButton
             // 
-            this.applyButton.Location = new System.Drawing.Point(105, 207);
+            this.applyButton.Location = new System.Drawing.Point(105, 236);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 2;
@@ -85,7 +82,7 @@
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(197, 207);
+            this.okButton.Location = new System.Drawing.Point(197, 236);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 3;
@@ -95,7 +92,7 @@
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(12, 207);
+            this.cancelButton.Location = new System.Drawing.Point(12, 236);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 4;
@@ -123,7 +120,7 @@
             // 
             // restoreDefaultsButton
             // 
-            this.restoreDefaultsButton.Location = new System.Drawing.Point(12, 179);
+            this.restoreDefaultsButton.Location = new System.Drawing.Point(12, 204);
             this.restoreDefaultsButton.Name = "restoreDefaultsButton";
             this.restoreDefaultsButton.Size = new System.Drawing.Size(168, 22);
             this.restoreDefaultsButton.TabIndex = 8;
@@ -206,18 +203,18 @@
             // hideTitleBarCheckBox
             // 
             this.hideTitleBarCheckBox.AutoSize = true;
-            this.hideTitleBarCheckBox.Location = new System.Drawing.Point(197, 25);
+            this.hideTitleBarCheckBox.Location = new System.Drawing.Point(12, 181);
             this.hideTitleBarCheckBox.Name = "hideTitleBarCheckBox";
-            this.hideTitleBarCheckBox.Size = new System.Drawing.Size(87, 17);
+            this.hideTitleBarCheckBox.Size = new System.Drawing.Size(179, 17);
             this.hideTitleBarCheckBox.TabIndex = 18;
-            this.hideTitleBarCheckBox.Text = "Hide TitleBar";
+            this.hideTitleBarCheckBox.Text = "Hide TitleBar (EXPERIMENTAL)";
             this.hideTitleBarCheckBox.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 240);
+            this.ClientSize = new System.Drawing.Size(284, 278);
             this.Controls.Add(this.hideTitleBarCheckBox);
             this.Controls.Add(this.updateIntervalComboBox);
             this.Controls.Add(this.label7);

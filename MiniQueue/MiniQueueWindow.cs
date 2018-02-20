@@ -50,6 +50,7 @@ namespace MiniQueue
             public int Right;
             public int Bottom;
         }
+        
 
         //eventually this will be configurable in settings
         readonly int defaultRetryValue = Properties.Settings.Default.UpdateInterval * 1000;
@@ -75,7 +76,7 @@ namespace MiniQueue
 
 
         }
-
+        /*
         /// <summary>
         /// Basically this capitures the WndProc message for window resize
         /// and ensures that the window maintains the same expect ratio
@@ -114,7 +115,7 @@ namespace MiniQueue
             }
 
             base.WndProc(ref m);
-        }
+        }*/
 
         private void MiniQueueWindow_Load(object sender, EventArgs e)
         {
@@ -365,7 +366,7 @@ namespace MiniQueue
             switch (Properties.Settings.Default.SizeMode)
             {
                 case "Very Small":
-                    this.Size = new Size(216, 107);
+                    this.Size = this.MaximumSize = this.MaximumSize = new Size(216, 107);
                     this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 24);
                     this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 24);
                     this.contactWaitingValue.Location = new Point(10, 25);
@@ -378,14 +379,20 @@ namespace MiniQueue
                     //label2.Hide();
                     break;
                 case "Small":
-                    this.Size = new Size(339, 159);
+                    this.Size = this.MaximumSize = this.MaximumSize = new Size(280, 140);
                     this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 48);
                     this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 48);
+                    this.label2.Location = new Point(100, 9);
                     break;
                 case "Medium":
-                    this.Size = new Size(339, 159);
+                    this.Size = this.MaximumSize = this.MaximumSize = new Size(339, 159);
                     this.contactWaitingValue.Font = new Font(contactWaitingValue.Font.FontFamily, 48);
                     this.longestWaitingValue.Font = new Font(longestWaitingValue.Font.FontFamily, 48);
+                    this.contactWaitingValue.Location = new Point(15,33);
+                    this.longestWaitingValue.Location = new Point(106,33);
+                    this.label1.Text = "Contacts Waiting:";
+                    this.label2.Text = "Longest Waiting:";
+                    this.label2.Location = new Point(165,9);
                     if (!label1.Visible) { label1.Show(); }
                     if (!label2.Visible) { label2.Show(); }
                     break;
@@ -419,6 +426,8 @@ namespace MiniQueue
             }
             
         }
+
+        
     }
 }
 
